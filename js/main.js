@@ -1,78 +1,48 @@
-/* Rosa Montero DepiLáser · interacciones mínimas (menú, cabecera y apariciones) */
+// Menú en móvil, sombra de la barra al desplazarse y día de hoy en el horario.
 (function () {
-  'use strict';
+  var boton = document.querySelector("[data-menu-boton]");
+  var menu = document.getElementById("menu");
 
-  var root = document.documentElement;
-  root.classList.add('js');
+  function cerrarMenu() {
+    menu.removeAttribute("data-abierto");
+    boton.setAttribute("aria-expanded", "false");
+  }
 
-  document.addEventListener('DOMContentLoaded', function () {
-    var header = document.querySelector('[data-header]');
-    var toggle = document.querySelector('[data-nav-toggle]');
-    var nav = document.getElementById('site-nav');
+  if (boton && menu) {
+    boton.addEventListener("click", function () {
+      var abierto = boton.getAttribute("aria-expanded") === "true";
+      if (abierto) {
+        cerrarMenu();
+      } else {
+        menu.setAttribute("data-abierto", "");
+        boton.setAttribute("aria-expanded", "true");
+      }
+    });
+    menu.addEventListener("click", function (e) {
+      if (e.target.closest("a")) cerrarMenu();
+    });
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && boton.getAttribute("aria-expanded") === "true") {
+        cerrarMenu();
+        boton.focus();
+      }
+    });
+  }
 
-    // Menú móvil
-    function setMenu(open) {
-      if (!header || !toggle) return;
-      header.classList.toggle('is-open', open);
-      toggle.setAttribute('aria-expanded', String(open));
-      var label = toggle.querySelector('.visually-hidden');
-      if (label) label.textContent = open ? 'Cerrar menú' : 'Abrir menú';
+  var barra = document.querySelector("[data-barra]");
+  if (barra) {
+    var actualizar = function () {
+      if (window.scrollY > 40) barra.setAttribute("data-con-sombra", "");
+      else barra.removeAttribute("data-con-sombra");
+    };
+    window.addEventListener("scroll", actualizar, { passive: true });
+    actualizar();
+  }
+
+  var hoy = String(new Date().getDay());
+  document.querySelectorAll(".horario tr[data-dias]").forEach(function (fila) {
+    if (fila.getAttribute("data-dias").split(" ").indexOf(hoy) !== -1) {
+      fila.setAttribute("data-hoy", "");
     }
-
-    if (toggle && nav) {
-      toggle.addEventListener('click', function () {
-        setMenu(toggle.getAttribute('aria-expanded') !== 'true');
-      });
-      nav.addEventListener('click', function (event) {
-        if (event.target.closest('a')) setMenu(false);
-      });
-      document.addEventListener('keydown', function (event) {
-        if (event.key === 'Escape') setMenu(false);
-      });
-      window.matchMedia('(min-width: 1000px)').addEventListener('change', function () {
-        setMenu(false);
-      });
-    }
-
-    // Borde de la cabecera al desplazarse
-    if (header) {
-      var onScroll = function () {
-        header.classList.toggle('is-scrolled', window.scrollY > 8);
-      };
-      onScroll();
-      window.addEventListener('scroll', onScroll, { passive: true });
-    }
-
-    // Apariciones suaves al hacer scroll
-    var items = document.querySelectorAll('[data-reveal]');
-    var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    if (reduceMotion || !('IntersectionObserver' in window)) {
-      items.forEach(function (el) { el.classList.add('is-visible'); });
-    } else {
-      var observer = new IntersectionObserver(function (entries) {
-        entries.forEach(function (entry) {
-          if (entry.isIntersecting) {
-            var target = entry.target;
-            target.classList.add('is-visible');
-            observer.unobserve(target);
-            // Retira el retardo para que no afecte a los efectos al pasar el ratón
-            window.setTimeout(function () { target.style.transitionDelay = ''; }, 1400);
-          }
-        });
-      }, { rootMargin: '0px 0px -8% 0px', threshold: 0.12 });
-
-      items.forEach(function (el) {
-        // Pequeño escalonado entre elementos hermanos
-        var siblings = el.parentElement ? el.parentElement.querySelectorAll(':scope > [data-reveal]') : [];
-        var index = Array.prototype.indexOf.call(siblings, el);
-        if (index > 0) el.style.transitionDelay = Math.min(index, 4) * 90 + 'ms';
-        observer.observe(el);
-      });
-    }
-
-    // Año del pie
-    var year = document.querySelector('[data-year]');
-    if (year) year.textContent = String(new Date().getFullYear());
   });
 })();
