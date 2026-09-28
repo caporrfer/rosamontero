@@ -1,22 +1,31 @@
-# Rosa Montero DepiLáser · Borrador de web
+# Rosa Montero · Centro de estética en Huelva
 
-Propuesta inicial de web para **Rosa Montero DepiLáser**, centro de estética en Calle Rábida, 18, 21001 Huelva.
+Web de una sola página para el centro de estética Rosa Montero (C. Rábida, 18, 21001 Huelva · 617 71 30 30).
 
-Es una página estática sin dependencias ni proceso de compilación.
+Es una web estática: no necesita compilación ni dependencias.
 
 ## Cómo verla
 
-- Abre `index.html` en el navegador, o
-- sírvela en local: `python3 -m http.server 8000` y visita <http://localhost:8000>.
+```sh
+python3 -m http.server 8000
+```
+
+y abre <http://localhost:8000>. También puedes abrir `index.html` directamente en el navegador.
 
 ## Estructura
 
 ```
-index.html          Página única: presentación, servicios, el centro, opiniones, preguntas y contacto
-css/styles.css      Estilos (paleta marfil, rosa empolvado, ciruela y bronce; adaptable a móvil)
-js/main.js          Menú móvil, cabecera y animaciones de aparición (respeta «reducir movimiento»)
-assets/favicon.svg  Monograma provisional «RM»
-NOTA-DE-ENTREGA.md  Datos pendientes, discrepancias y lista de tareas antes de publicar
+index.html          Página: inicio, tratamientos, el centro, opiniones, Instagram y contacto
+css/estilos.css     Estilos (paleta menta, salvia y piedra; adaptable a móvil)
+js/app.js           Menú móvil, cabecera al hacer scroll y animaciones de aparición
+assets/negocio/     Fotografías originales del centro
+assets/web/         Versiones optimizadas (WebP) y recortes de las fotografías originales
+assets/favicon.svg  Icono de la pestaña
 ```
 
-Las consultas y citas se dirigen siempre al teléfono (`tel:+34617713030`). La información sin confirmar está en [`NOTA-DE-ENTREGA.md`](NOTA-DE-ENTREGA.md), fuera del contenido para visitantes.
+## Antes de publicar
+
+- Confirmar con Rosa el permiso para usar las fotografías (las de Google Maps las subieron usuarios y los diseños de Instagram pueden incluir imágenes de terceros).
+- Añadir el horario completo en la sección de contacto.
+- Confirmar que el 617 71 30 30 tiene WhatsApp.
+- Cuando haya dominio, poner la URL absoluta en `og:image`.
